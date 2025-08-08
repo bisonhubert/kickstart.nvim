@@ -465,6 +465,18 @@ require('lazy').setup({
   },
 
   -- LSP Plugins
+  --
+  --  todobison
+  --  Plugins
+  --  [ ] treesitter
+  --  [ ] tig
+  --  LSPs
+  --  [ ] ruby/rails
+  --  [ ] goto
+  --  [ ] react
+  --  [ ] typescript
+  --  [ ] graphql
+  --  [ ] markdown
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
     -- used for completion, annotations and signatures of Neovim apis
