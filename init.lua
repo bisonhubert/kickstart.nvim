@@ -481,6 +481,43 @@ require('lazy').setup({
     -- https://github.com/fannheyward/coc-rust-analyzer
     'neoclide/coc.nvim',
     branch = 'release',
+    config = function()
+      local keyset = vim.keymap.set
+      
+      -- Helper function for tab completion
+      function _G.check_back_space()
+        local col = vim.fn.col('.') - 1
+        return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+      end
+
+      -- Use Tab and Shift-Tab for completion navigation
+      local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
+      keyset("i", "<TAB>", 'coc#pum#visible() ? coc#pum#next(1) : v:lua.check_back_space() ? "<TAB>" : coc#refresh()', opts)
+      keyset("i", "<S-TAB>", [[coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"]], opts)
+
+      -- Use <Enter> to confirm completion
+      keyset("i", "<CR>", [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], opts)
+
+      -- Essential LSP keybindings
+      keyset("n", "gd", "<Plug>(coc-definition)", {silent = true})
+      keyset("n", "gr", "<Plug>(coc-references)", {silent = true})
+      keyset("n", "<leader>rn", "<Plug>(coc-rename)", {silent = true})
+      
+      -- Show documentation with K
+      keyset("n", "K", function()
+        if vim.fn.CocAction('hasProvider', 'hover') then
+          vim.fn.CocActionAsync('doHover')
+        else
+          vim.fn.feedkeys('K', 'in')
+        end
+      end, {silent = true})
+
+      -- Navigate diagnostics
+      keyset("n", "[d", "<Plug>(coc-diagnostic-prev)", {silent = true})
+      keyset("n", "]d", "<Plug>(coc-diagnostic-next)", {silent = true})
+
+      print("coc.nvim configured - run :CocInstall coc-rust-analyzer")
+    end,
   },
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
