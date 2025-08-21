@@ -166,6 +166,12 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Fixes issue where tab and newlines were over-indenting on vim.o (shiftwidth specifically)
+vim.o.tabstop = 2        -- Number of spaces a tab represents
+vim.o.shiftwidth = 2     -- Number of spaces for each indent
+vim.o.expandtab = true   -- Use spaces instead of tabs
+vim.o.smartindent = true -- Smart autoindenting
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
