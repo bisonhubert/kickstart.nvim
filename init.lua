@@ -463,7 +463,6 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
-
   -- LSP Plugins
   --
   --  todobison
@@ -532,7 +531,16 @@ require('lazy').setup({
           -- C-k: Toggle signature help (if signature.enabled = true)
           --
           -- See :h blink-cmp-config-keymap for defining your own keymap
-          keymap = { preset = 'default' },
+          keymap = {
+            preset = 'none', -- Start with no preset
+            ['<Tab>'] = { 'select_next', 'fallback' },
+            ['<S-Tab>'] = { 'select_prev', 'fallback' },
+            ['<CR>'] = { 'accept', 'fallback' },
+            ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+            ['<C-e>'] = { 'hide' },
+            ['<C-n>'] = { 'select_next', 'fallback' },
+            ['<C-p>'] = { 'select_prev', 'fallback' },
+          },
 
           appearance = {
             -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
