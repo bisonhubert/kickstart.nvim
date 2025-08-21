@@ -474,6 +474,14 @@ require('lazy').setup({
   --  [ ] graphql
   --  [ ] markdown
   --  [ ] rust
+
+  {
+    -- Rust LSP using Conquer of Completion and CoC Rust Analyzer
+    -- https://github.com/neoclide/coc.nvim and
+    -- https://github.com/fannheyward/coc-rust-analyzer
+    'neoclide/coc.nvim',
+    branch = 'release',
+  },
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
     -- used for completion, annotations and signatures of Neovim apis
