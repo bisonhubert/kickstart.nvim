@@ -1,3 +1,3 @@
 {
-  "rust-analyzer.server.path": "/opt/homebrew/bin/rust-analyzer"
+  "rust-analyzer.server.path": "rustup run stable rust-analyzer"
 }

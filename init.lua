@@ -479,7 +479,7 @@ require('lazy').setup({
   --  [ ] typescript
   --  [ ] graphql
   --  [ ] markdown
-  --  [ ] rust
+  --  [x] rust
 
   {
     -- Rust LSP using Conquer of Completion and CoC Rust Analyzer
