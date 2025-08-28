@@ -476,7 +476,7 @@ require('lazy').setup({
   --  [ ] ruby/rails
   --  [ ] goto
   --  [ ] react
-  --  [ ] typescript
+  --  [x] typescript
   --  [ ] graphql
   --  [ ] markdown
   --  [x] rust
@@ -524,6 +524,14 @@ require('lazy').setup({
 
       print("coc.nvim configured - run :CocInstall coc-rust-analyzer")
     end,
+  },
+  {
+    -- TypeScript LSP
+    -- fast, pure lua replacement for typescript-language-server
+    -- super fast and in beta
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {},
   },
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
