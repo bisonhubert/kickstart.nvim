@@ -232,6 +232,20 @@ vim.keymap.set('n', '<leader>p', function()
   vim.cmd('checktime') -- Reload buffer to show changes
 end, { desc = 'Format current file with prettier' })
 
+-- Format and fix current file on save
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = { "*.js", "*.ts", "*.jsx", "*.tsx", "*.graphql", "*.css", "*.scss", "*.mdx" },
+  callback = function()
+    local filepath = vim.fn.expand('%:p')
+    local escaped_path = vim.fn.shellescape(filepath)
+    -- Run eslint --fix first, then prettier
+    vim.fn.system('yarn prettier --write ' .. escaped_path)
+    vim.cmd('checktime')
+    -- Refresh coc diagnostics
+    vim.fn.CocActionAsync('diagnosticRefresh')
+  end,
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
