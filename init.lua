@@ -476,15 +476,20 @@ require('lazy').setup({
   --  [ ] ruby/rails
   --  [ ] goto
   --  [ ] react
-  --  [x] typescript
   --  [ ] graphql
   --  [ ] markdown
+  --  [x] typescript
   --  [x] rust
 
   {
-    -- Rust LSP using Conquer of Completion and CoC Rust Analyzer
+    -- LSP client Conquer of Completion aka Coc
     -- https://github.com/neoclide/coc.nvim and
     -- https://github.com/fannheyward/coc-rust-analyzer
+    --
+    -- List extensions with :CocList extensions
+    -- coc-tsserver 2.3.1 ~/.config/coc/extensions/node_modules/coc-tsserver
+    -- coc-rust-analyzer 0.84.0 ~/.config/coc/extensions/node_modules/coc-rust-analyzer
+
     'neoclide/coc.nvim',
     branch = 'release',
     config = function()
@@ -524,14 +529,6 @@ require('lazy').setup({
 
       print("coc.nvim configured - run :CocInstall coc-rust-analyzer")
     end,
-  },
-  {
-    -- TypeScript LSP
-    -- fast, pure lua replacement for typescript-language-server
-    -- super fast and in beta
-    "pmizio/typescript-tools.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    opts = {},
   },
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
