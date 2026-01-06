@@ -490,11 +490,12 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
+  --  todobison
   --  Plugins
   --  [ ] treesitter
   --  [ ] tig
   --  LSPs
-  --  [ ] ruby/rails
+  --  [x] ruby/rails
   --  [ ] goto
   --  [ ] react
   --  [ ] graphql
@@ -502,6 +503,37 @@ require('lazy').setup({
   --  [x] sql
   --  [x] typescript
   --  [x] rust
+
+  {
+    'stevearc/conform.nvim',
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          ruby = { "rubocop" },
+        },
+        formatters = {
+          rubocop = {
+            command = "bundle",
+            args = { 
+              "exec",
+              "rubocop",
+              "-A",
+              "--force-exclusion",
+              "--stdin",
+              "$FILENAME",
+              "--stderr",
+            },
+            cwd = require("conform.util").root_file({ "Gemfile", ".rubocop.yml" }),
+            timeout_ms = 5000,
+          },
+        },
+        format_on_save = {
+          timeout_ms = 5000,
+          lsp_fallback = true,
+        },
+      })
+    end,
+  },
 
   {
     'MeanderingProgrammer/render-markdown.nvim',
