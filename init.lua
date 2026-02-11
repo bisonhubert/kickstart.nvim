@@ -246,6 +246,30 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   end,
 })
 
+-- MARKDOWN
+-- Set textwidth for markdown files
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = {"markdown", "mdx"},
+--   callback = function()
+--     vim.opt_local.textwidth = 80
+--   end,
+-- })
+
+-- Format on save
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--   pattern = {"*.md", "*.mdx"},
+--   callback = function()
+--     -- Check textwidth is set
+--     if vim.bo.textwidth == 0 then
+--       vim.bo.textwidth = 80
+--     end
+--
+--     local view = vim.fn.winsaveview()
+--     vim.cmd("normal! gggqG")
+--     vim.fn.winrestview(view)
+--   end,
+-- })
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
