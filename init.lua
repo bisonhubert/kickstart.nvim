@@ -233,20 +233,20 @@ vim.keymap.set('n', '<leader>p', function()
 end, { desc = 'Format current file with prettier' })
 
 -- Copy current file path to clipboard
-vim.keymap.set('n', '<leader>cp', function()
+vim.keymap.set('n', '<leader>crelp', function()
   local filepath = vim.fn.expand('%:.')
   vim.fn.setreg('+', filepath)
   vim.notify(filepath, vim.log.levels.INFO)
 end, { desc = '[C]opy relative file [P]ath to clipboard' })
 
-vim.keymap.set('n', '<leader>cfp', function()
+vim.keymap.set('n', '<leader>cabsp', function()
   local filepath = vim.fn.expand('%:p')
   vim.fn.setreg('+', filepath)
   vim.notify(filepath, vim.log.levels.INFO)
 end, { desc = '[C]opy absolute file [P]ath to clipboard' })
 
 -- Open current file on GitHub in browser
-vim.keymap.set('n', '<leader>fpg', function()
+vim.keymap.set('n', '<leader>grelp', function()
   local remote = vim.fn.system('git remote get-url origin'):gsub('%s+$', '')
   local account, repo = remote:match('github%.com[:/]([^/]+)/([^/%.]+)')
   if not account then
