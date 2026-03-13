@@ -250,7 +250,7 @@ vim.keymap.set('n', '<leader>fpg', function()
   local remote = vim.fn.system('git remote get-url origin'):gsub('%s+$', '')
   local account, repo = remote:match('github%.com[:/]([^/]+)/([^/%.]+)')
   if not account then
-    vim.notify('Could not parse GitHub remote', vim.log.levels.ERROR)
+    vim.notify('Could not parse GitHub remote. Are you in a .git repo?', vim.log.levels.ERROR)
     return
   end
   local filepath = vim.fn.expand('%:.')
