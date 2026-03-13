@@ -232,6 +232,19 @@ vim.keymap.set('n', '<leader>p', function()
   vim.cmd('checktime') -- Reload buffer to show changes
 end, { desc = 'Format current file with prettier' })
 
+-- Copy current file path to clipboard
+vim.keymap.set('n', '<leader>cp', function()
+  local filepath = vim.fn.expand('%:.')
+  vim.fn.setreg('+', filepath)
+  vim.notify(filepath, vim.log.levels.INFO)
+end, { desc = '[C]opy relative file [P]ath to clipboard' })
+
+vim.keymap.set('n', '<leader>cfp', function()
+  local filepath = vim.fn.expand('%:p')
+  vim.fn.setreg('+', filepath)
+  vim.notify(filepath, vim.log.levels.INFO)
+end, { desc = '[C]opy absolute file [P]ath to clipboard' })
+
 -- Format and fix current file on save
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = { "*.js", "*.ts", "*.jsx", "*.tsx", "*.graphql", "*.css", "*.scss", "*.mdx" },
