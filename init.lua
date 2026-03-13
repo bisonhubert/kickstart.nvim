@@ -245,6 +245,19 @@ vim.keymap.set('n', '<leader>cfp', function()
   vim.notify(filepath, vim.log.levels.INFO)
 end, { desc = '[C]opy absolute file [P]ath to clipboard' })
 
+-- Open current file on GitHub in browser
+vim.keymap.set('n', '<leader>fpg', function()
+  local remote = vim.fn.system('git remote get-url origin'):gsub('%s+$', '')
+  local account, repo = remote:match('github%.com[:/]([^/]+)/([^/%.]+)')
+  if not account then
+    vim.notify('Could not parse GitHub remote', vim.log.levels.ERROR)
+    return
+  end
+  local filepath = vim.fn.expand('%:.')
+  local url = ('https://github.com/%s/%s/blob/main/%s'):format(account, repo, filepath)
+  vim.fn.system({ 'open', url })
+end, { desc = 'Open [F]ile [P]ath on [G]itHub in browser' })
+
 -- Format and fix current file on save
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = { "*.js", "*.ts", "*.jsx", "*.tsx", "*.graphql", "*.css", "*.scss", "*.mdx" },
