@@ -1,3 +1,10 @@
 {
-  "rust-analyzer.server.path": "rustup run stable rust-analyzer"
+  "rust-analyzer.server.path": "rustup run stable rust-analyzer",
+  "languageserver": {
+    "ruby-lsp": {
+      "command": "ruby-lsp",
+      "filetypes": ["ruby"],
+      "rootPatterns": [".git", "Gemfile"]
+    }
+  }
 }

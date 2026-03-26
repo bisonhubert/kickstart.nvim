@@ -629,14 +629,10 @@ require('lazy').setup({
       keyset("n", "gd", "<Plug>(coc-definition)", {silent = true})
       keyset("n", "gr", "<Plug>(coc-references)", {silent = true})
       keyset("n", "<leader>rn", "<Plug>(coc-rename)", {silent = true})
-      
+
       -- Show documentation with K
       keyset("n", "K", function()
-        if vim.fn.CocAction('hasProvider', 'hover') then
-          vim.fn.CocActionAsync('doHover')
-        else
-          vim.fn.feedkeys('K', 'in')
-        end
+        vim.fn.CocActionAsync('doHover')
       end, {silent = true})
 
       -- Navigate diagnostics
