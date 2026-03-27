@@ -245,18 +245,12 @@ vim.keymap.set('n', '<leader>cabsp', function()
   vim.notify(filepath, vim.log.levels.INFO)
 end, { desc = '[C]opy absolute file [P]ath to clipboard' })
 
--- Open current file on GitHub in browser
-vim.keymap.set('n', '<leader>grelp', function()
-  local remote = vim.fn.system('git remote get-url origin'):gsub('%s+$', '')
-  local account, repo = remote:match('github%.com[:/]([^/]+)/([^/%.]+)')
-  if not account then
-    vim.notify('Could not parse GitHub remote. Are you in a .git repo?', vim.log.levels.ERROR)
-    return
-  end
-  local filepath = vim.fn.expand('%:.')
-  local url = ('https://github.com/%s/%s/blob/main/%s'):format(account, repo, filepath)
-  vim.fn.system({ 'open', url })
-end, { desc = 'Open [F]ile [P]ath on [G]itHub in browser' })
+-- Open current file in browser in pganalyze/pganalyze Github repo
+vim.keymap.set('n', '<leader>gh', function()
+  local file = vim.fn.expand('%')  -- relative path from cwd
+  local url = 'https://github.com/pganalyze/pganalyze/blob/main/' .. file
+  vim.fn.system({ 'open', url })   -- macOS 'open' launches browser
+end, { desc = 'Open file on GitHub' })
 
 -- Format and fix current file on save
 vim.api.nvim_create_autocmd("BufWritePost", {
