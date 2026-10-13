@@ -245,11 +245,16 @@ vim.keymap.set('n', '<leader>cabsp', function()
   vim.notify(filepath, vim.log.levels.INFO)
 end, { desc = '[C]opy absolute file [P]ath to clipboard' })
 
--- Open current file in browser in pganalyze/pganalyze Github repo
+-- Open current file in browser in its Github repo
 vim.keymap.set('n', '<leader>gh', function()
-  local file = vim.fn.expand('%')  -- relative path from cwd
-  local url = 'https://github.com/pganalyze/pganalyze/blob/main/' .. file
-  vim.fn.system({ 'open', url })   -- macOS 'open' launches browser
+  local path = vim.fn.expand('%:p')
+  local function git(...)
+    local out = vim.system({ 'git', '-C', vim.fs.dirname(path), ... }, { text = true }):wait().stdout
+    return vim.trim(out or '')
+  end
+  local repo = git('remote', 'get-url', 'origin'):gsub('%.git$', ''):match('[:/]([^/:]+/[^/]+)$') or ''
+  local file = git('rev-parse', '--show-prefix') .. vim.fs.basename(path)
+  vim.ui.open('https://github.com/' .. repo .. '/blob/main/' .. file)
 end, { desc = 'Open file on GitHub' })
 
 -- Format and fix current file on save
@@ -764,22 +769,67 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    -- The `master` branch is locked to Neovim 0.11 and its query directives call
+    -- the pre-0.12 treesitter API, which is why markdown buffers threw
+    -- "attempt to call method 'range' (a nil value)". `main` is the branch that
+    -- supports 0.12+, and it has no `nvim-treesitter.configs` module: parsers
+    -- are installed directly and highlighting is started per buffer.
+    branch = 'main',
+    lazy = false,
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
+    config = function()
+      local nvim_treesitter = require 'nvim-treesitter'
+      local ensure_installed =
+        { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+
+      -- `install` on this branch always recompiles, so only ask for what is
+      -- actually missing. Otherwise every startup rebuilds every parser.
+      local function install_missing(langs)
+        local installed = {}
+        for _, lang in ipairs(nvim_treesitter.get_installed()) do
+          installed[lang] = true
+        end
+        local missing = vim.tbl_filter(function(lang)
+          return not installed[lang]
+        end, langs)
+        if #missing > 0 then
+          nvim_treesitter.install(missing)
+        end
+      end
+
+      install_missing(ensure_installed)
+
+      -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+      --  If you are experiencing weird indenting issues, add the language here: it keeps
+      --  the regex highlighter alongside treesitter and skips the treesitter indentexpr.
+      local additional_vim_regex_highlighting = { ruby = true }
+
+      vim.api.nvim_create_autocmd('FileType', {
+        desc = 'Start treesitter highlighting and indent wherever a parser is available',
+        callback = function(event)
+          local filetype = event.match
+          local lang = vim.treesitter.language.get_lang(filetype) or filetype
+
+          local ok, added = pcall(vim.treesitter.language.add, lang)
+          if not (ok and added) then
+            -- Stands in for the old `auto_install`: fetch the parser in the
+            -- background, and pick it up the next time this filetype opens.
+            -- Silent, because plenty of filetypes have no parser at all.
+            if vim.tbl_contains(nvim_treesitter.get_available(), lang) then
+              pcall(install_missing, { lang })
+            end
+            return
+          end
+
+          vim.treesitter.start(event.buf, lang)
+          if additional_vim_regex_highlighting[filetype] then
+            vim.bo[event.buf].syntax = 'on'
+          else
+            vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
+      })
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
